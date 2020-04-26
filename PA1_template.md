@@ -12,7 +12,7 @@ output:
 
 The data for this project come from an anonymous individual's fitness device. The data were taken over October and November for a total of 61 days of records. Each day is divided into 288 five-minute intervals, and the number of steps taken by during these intervals is recorded.
 
-First step is to read in the data from the *activity.csv* file. We will then take a look at the data using *str()* and *head()*.
+Our first step is to read the data from the *activity.csv* file. We will then take a look at the data using *str()* and *head()*.
 
 
 ```r
@@ -48,7 +48,7 @@ head(stp_data, 13)
 ## 13    NA 2012-10-01      100
 ```
 
-Immediately, we notice that the **date** and **interval** variables are string and integer class, respectively. We can combine these into a POSIX class variable by first "padding" the **interval** values with leading zeros. This will require the *stringr* package.
+Immediately, we notice that the **date** and **interval** variables are factor and integer classes, respectively. We can combine these into a POSIX class variable by first "padding" the **interval** values with leading zeros. This will require the *stringr* package.
 
 
 ```r
@@ -210,7 +210,7 @@ summary(stp_data$steps)
 ##    0.00    0.00    0.00   37.38   12.00  806.00    2304
 ```
 
-From the summary we see that there are 2,304 observations with missing values. This number offers a clue about an underlying pattern in the missing values. There are 288 five minute intervals in a 24 hour day. Our number of misssing values is a multiple of 288, so we might guess that every missing value belongs to a full day of missing values. By comparing the two histograms in the first section, we can already tell that there are around 7 or 8 completely missing days from the data. 
+From the summary we see that there are 2,304 observations with missing values. This number offers a clue about an underlying pattern in the missing values. There are 288 five minute intervals in a 24 hour day. Our number of missing values is a multiple of 288, so we might guess that every missing value belongs to a full day of missing values. By comparing the two histograms in the first section, we can already tell that there are around 7 or 8 completely missing days from the data. 
 
 We can quickly test this, by grouping the data by date and creating a variable **missing_days** that will count the number of missing observations in each day.
 
@@ -290,11 +290,13 @@ legend("topright",
 
 ![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
-The mean of our new, imputed data is 10,766 steps and the median is 10,766 steps. Which is nearly, if not precisely, the same result we achieved by simply removing the missing days.
+The mean of our new, imputed data is 10,766 steps and the median is 10,766 steps. Which is nearly the same result we achieved by simply removing the missing days. This makes sense, since we replaced all the zero values from our first histogram with the mean value of our second histogram. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 Lastly, we will use our imputed data to compare average activity patterns between weekdays and weekends. We will begin by using the function *weekdays()* to extract a day of the week value from our **date.time** POSIX variable. Then we will convert this to a factor, using a logical vector as an intermediate step, and save it as a new variable in the data frame.
+
+With this new weekday vs weekend factor, we will group the data by time interval and weekday vs weekend. Then we will plot the activity patterns for each.
 
 
 ```r
@@ -350,3 +352,5 @@ plot(act_ptrn$time[act_comp$week == "Weekday"],
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+Looking at the two activity patterns, they look remarkably similar. The weekend pattern has a slighly higher peak. Nevertheless, it appears the subject has very similar weekend and weekday routines.
